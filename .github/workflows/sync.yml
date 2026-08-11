@@ -1,0 +1,23 @@
+name: Upstream Sync
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+jobs:
+  sync_with_upstream:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.repository.fork }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Sync Upstream
+        uses: aormsby/Fork-Sync-With-Upstream-action@v3.4
+        with:
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }}
+          upstream_sync_repo: shuaiplus/inkstone
+          upstream_sync_branch: main
+          target_sync_branch: main
+          test_mode: false
