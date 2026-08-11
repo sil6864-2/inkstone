@@ -1,7 +1,6 @@
 import { LIMITS } from '@shared/constants'
 import { truncateText } from '@shared/text-utils'
 import type {
-  BackupMode,
   BackupRun,
   BackupTarget,
   BackupTargetResult,
@@ -13,13 +12,7 @@ import type { Env } from '../env'
 import { decryptSecret } from '../lib/crypto'
 import { newId } from '../lib/id'
 import { acquireLease } from '../lib/lease'
-import { createZip } from '@shared/zip'
-import {
-  assertArchiveCanBeRestored,
-  buildSnapshot,
-  type BackupFile,
-  type Snapshot,
-} from './snapshot'
+import { buildSnapshot, type Snapshot } from './snapshot'
 import { friendlyError, isTransientBackupError } from './common'
 import { forEachConcurrent } from './concurrency'
 import { s3Deliver, s3Test, type S3Secret } from './s3'
@@ -67,7 +60,8 @@ function safeParse(raw: string): S3Config & WebdavConfig {
   }
 }
 
-const TARGET_TIMEOUT_MS = 5 * 60_000
+const TARGET_TIMEOUT_MIN_MS = 12 * 60_000
+const TARGET_TIMEOUT_MAX_MS = 2 * 60 * 60_000
 const BACKUP_LEASE_TTL_MS = 30 * 60_000
 const BACKUP_LEASE_RENEW_MS = 5 * 60_000
 const TEST_TIMEOUT_MS = 20_000
@@ -152,29 +146,13 @@ async function runBackupUnlocked(
       bytes: 0,
       results,
     }
-    await recordOutcomeSafely(env, userId, failed)
+    await recordOutcomeSafely(env, userId, failed, targets)
     return failed
   }
 
-  let archiveFile: BackupFile | null = null
-  let archiveError: unknown = null
-  if (targets.some((target) => !usesMirror(target, snapshot))) {
-    try {
-      assertArchiveCanBeRestored(snapshot.files)
-      const zip = createZip(snapshot.files.map((file) => ({ path: file.path, data: file.body })))
-      archiveFile = {
-        path: `inkstone-backup-${snapshot.stamp}.zip`,
-        body: zip,
-        contentType: 'application/zip',
-      }
-    } catch (error) {
-      archiveError = error
-    }
-  }
-
   const results = new Array<BackupTargetResult>(targets.length)
-  await forEachConcurrent(targets, 3, async (target, index) => {
-    results[index] = await deliverToTarget(env, target, snapshot, archiveFile, archiveError)
+  await forEachConcurrent(targets, 2, async (target, index) => {
+    results[index] = await deliverToTarget(env, target, snapshot)
   })
 
   const okCount = results.filter((r) => r.ok).length
@@ -190,7 +168,7 @@ async function runBackupUnlocked(
     results,
   }
 
-  await recordOutcomeSafely(env, userId, run)
+  await recordOutcomeSafely(env, userId, run, targets)
   return run
 }
 
@@ -198,8 +176,6 @@ async function deliverToTarget(
   env: Env,
   target: TargetRow,
   snapshot: Snapshot,
-  archiveFile: BackupFile | null,
-  archiveError: unknown,
 ): Promise<BackupTargetResult> {
   const started = Date.now()
   const base: Omit<BackupTargetResult, 'ok' | 'files' | 'bytes' | 'ms' | 'error'> = {
@@ -217,15 +193,14 @@ async function deliverToTarget(
       throw new Error('Backup credentials could not be decrypted. Enter them again in Settings')
     }
 
-    const files = packageFiles(target, snapshot, archiveFile, archiveError)
     for (let attempt = 0; attempt < 2; attempt++) {
       const controller = new AbortController()
-      const timer = setTimeout(() => controller.abort(), TARGET_TIMEOUT_MS)
+      const timer = setTimeout(() => controller.abort(), targetTimeoutMs(snapshot))
       try {
         const outcome =
           target.type === 's3'
-            ? await s3Deliver(config, secret, files, snapshot.rootDir, controller.signal)
-            : await webdavDeliver(config, secret, files, snapshot.rootDir, controller.signal)
+            ? await s3Deliver(config, secret, snapshot, controller.signal)
+            : await webdavDeliver(config, secret, snapshot, controller.signal)
         return { ...base, ok: true, files: outcome.files, bytes: outcome.bytes, ms: Date.now() - started, error: null }
       } catch (error) {
         if (attempt > 0 || !isTransientBackupError(error)) throw error
@@ -246,21 +221,13 @@ async function deliverToTarget(
   }
 }
 
-function packageFiles(
-  target: TargetRow,
-  snapshot: Snapshot,
-  archiveFile: BackupFile | null,
-  archiveError: unknown,
-): BackupFile[] {
-  if (usesMirror(target, snapshot)) return snapshot.files
-  if (archiveError) throw archiveError
-  if (!archiveFile) throw new Error('The backup archive was not generated')
-  return [archiveFile]
-}
-
-function usesMirror(target: TargetRow, snapshot: Snapshot): boolean {
-  const mode: BackupMode = safeParse(target.config).mode ?? 'archive'
-  return mode === 'mirror' && snapshot.files.length <= LIMITS.mirrorFileCeiling
+function targetTimeoutMs(snapshot: Snapshot): number {
+  const transferBudget = snapshot.bytes / (128 * 1024) * 1000
+  const requestBudget = (snapshot.payloadFiles.length + 2) * 500
+  return Math.min(
+    TARGET_TIMEOUT_MAX_MS,
+    Math.max(TARGET_TIMEOUT_MIN_MS, 5 * 60_000 + transferBudget + requestBudget),
+  )
 }
 
 async function loadTargets(env: Env, userId: string, ids?: string[]): Promise<TargetRow[]> {
@@ -318,10 +285,11 @@ async function recordOutcomeSafely(
   env: Env,
   userId: string,
   run: BackupRun,
+  targets: readonly TargetRow[],
 ): Promise<void> {
   await persistRunSafely(env, userId, run)
   try {
-    await updateTargetStates(env, userId, run.results)
+    await updateTargetStates(env, userId, run.results, targets)
   } catch (error) {
     console.error(`[inkstone] Backup completed, but writing target state failed (${run.id}):`, error)
   }
@@ -331,16 +299,21 @@ async function updateTargetStates(
   env: Env,
   userId: string,
   results: BackupTargetResult[],
+  targets: readonly TargetRow[],
 ): Promise<void> {
   const now = Date.now()
   if (!results.length) return
+  const targetVersions = new Map(targets.map((target) => [target.id, target.updated_at]))
   await env.DB.batch(
-    results.map((result) =>
-      env.DB.prepare(
-        `UPDATE backup_targets SET last_run_at = ?1, last_status = ?2, last_error = ?3, updated_at = ?1
-           WHERE id = ?4 AND user_id = ?5`,
-      ).bind(now, result.ok ? 'success' : 'failed', result.error, result.targetId, userId),
-    ),
+    results.flatMap((result) => {
+      const targetVersion = targetVersions.get(result.targetId)
+      return targetVersion === undefined ? [] : [
+        env.DB.prepare(
+          `UPDATE backup_targets SET last_run_at = ?1, last_status = ?2, last_error = ?3, updated_at = ?1
+             WHERE id = ?4 AND user_id = ?5 AND updated_at = ?6`,
+        ).bind(now, result.ok ? 'success' : 'failed', result.error, result.targetId, userId, targetVersion),
+      ]
+    }),
   )
 }
 

@@ -3,7 +3,6 @@
 
 const DEFAULT_FREE_FAILS = 5
 const WINDOW_MS = 60 * 60 * 1000
-const RETENTION_MS = 7 * 24 * 60 * 60 * 1000
 
 export interface ThrottleTarget {
   key: string
@@ -56,19 +55,26 @@ export async function consumeAttemptBudget(
   const targets = normalizeAttemptBudgets(inputs)
   if (!targets.length) return
   const now = Date.now()
+  await assertNotLocked(db, targets.map((target) => target.key))
   const sql = `
     INSERT INTO login_attempts (key, fails, last_fail_at, locked_until)
     VALUES (?1, 1, ?2, NULL)
     ON CONFLICT(key) DO UPDATE SET
       fails = CASE
-        WHEN ?2 - login_attempts.last_fail_at > ?3 THEN 1
+        WHEN login_attempts.locked_until IS NOT NULL AND login_attempts.locked_until > ?2
+          THEN login_attempts.fails
+        WHEN ?2 - login_attempts.last_fail_at >= ?3 THEN 1
         ELSE login_attempts.fails + 1
       END,
-      last_fail_at = ?2,
+      last_fail_at = CASE
+        WHEN login_attempts.locked_until IS NOT NULL AND login_attempts.locked_until > ?2
+          THEN login_attempts.last_fail_at
+        ELSE ?2
+      END,
       locked_until = CASE
         WHEN login_attempts.locked_until IS NOT NULL AND login_attempts.locked_until > ?2
           THEN login_attempts.locked_until
-        WHEN ?2 - login_attempts.last_fail_at > ?3 THEN NULL
+        WHEN ?2 - login_attempts.last_fail_at >= ?3 THEN NULL
         WHEN login_attempts.fails + 1 > ?4 THEN ?2 + ?5
         ELSE NULL
       END`
@@ -80,9 +86,6 @@ export async function consumeAttemptBudget(
       target.maxAttempts,
       target.lockMs,
     ),
-  )
-  statements.push(
-    db.prepare(`DELETE FROM login_attempts WHERE last_fail_at < ?1`).bind(now - RETENTION_MS),
   )
   await db.batch(statements)
   await assertNotLocked(db, targets.map((target) => target.key))
@@ -115,9 +118,6 @@ export async function recordLoginFailure(
       END`
   const statements = targets.map((target) =>
     db.prepare(sql).bind(target.key, now, WINDOW_MS, target.freeFails),
-  )
-  statements.push(
-    db.prepare(`DELETE FROM login_attempts WHERE last_fail_at < ?1`).bind(now - RETENTION_MS),
   )
   await db.batch(statements)
 }

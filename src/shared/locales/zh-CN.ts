@@ -9,6 +9,7 @@ export const ZH_CN_MESSAGES = {
     "api.error.internal": "服务器内部错误",
     "api.error.invalid_avatar": "头像格式无效或图片过大",
     "api.error.invalid_credentials": "用户名或密码错误",
+    "api.error.invalid_two_factor_code": "验证码错误或已被使用",
     "api.error.invalid_profile_name": "显示名称格式不正确",
     "api.error.invalid_username": "用户名格式不正确",
     "api.error.not_found": "请求的内容不存在",
@@ -17,6 +18,11 @@ export const ZH_CN_MESSAGES = {
     "api.error.server_misconfigured": "服务器配置不完整",
     "api.error.storage_unavailable": "存储服务暂时不可用",
     "api.error.too_many_attempts": "尝试次数过多，请稍后再试",
+    "api.error.two_factor_already_enabled": "二次验证已启用",
+    "api.error.two_factor_challenge_expired": "本次登录验证已过期，请重新输入密码",
+    "api.error.two_factor_not_enabled": "尚未启用二次验证",
+    "api.error.two_factor_setup_expired": "本次设置已过期，请重新开始",
+    "api.error.two_factor_unavailable": "验证器密钥暂时不可用，请改用恢复码",
     "api.error.unauthenticated": "请先登录",
     "api.error.username_taken": "用户名已被使用",
     "api.error.weak_password": "密码强度不足",
@@ -69,15 +75,26 @@ export const ZH_CN_MESSAGES = {
     "auth.confirm_password": "确认密码",
     "auth.create_owner_account": "创建所有者账号",
     "auth.create_the_owner_account_this_step_appears_only_once": "创建你的所有者账号，这一步只会出现一次",
+    "auth.authenticator_code": "验证器验证码",
+    "auth.back_to_password": "返回密码登录",
     "auth.enter_a_username_and_password": "请输入用户名和密码",
+    "auth.enter_authenticator_code": "请输入验证器应用中的 6 位验证码",
+    "auth.enter_recovery_code": "请输入一枚恢复码",
     "auth.live_split_view_markdown_preview_realtime_multi_device_sync_multiple_web": "Markdown 分屏实时预览 · 多端实时同步 · 多路 WebDAV / S3 备份",
     "auth.network_error_try_again": "网络错误，请重试",
     "auth.no_account_create_one": "没有账号？注册一个",
     "auth.password_minimum_8_characters": "密码（至少 8 位）",
+    "auth.recovery_code": "恢复码",
+    "auth.recovery_code_used": "已使用恢复码登录",
+    "auth.recovery_codes_remaining": "还剩 {count} 枚未使用的恢复码；如有需要，请到设置中重新生成。",
     "auth.self_hosted_on_cloudflare_workers_your_data_is_yours": "私有笔记 · 数据由你掌控",
     "auth.sign_in": "登录",
     "auth.sign_up": "注册",
     "auth.this_is_a_private_instance_registration_is_closed_so_only_existing_accou": "这是一个私有实例，注册已关闭，只有现有账号可以登录",
+    "auth.two_step_verification_description": "密码验证成功，请再完成一次二次验证以登录。",
+    "auth.use_authenticator_code": "使用验证器验证码",
+    "auth.use_recovery_code": "使用恢复码",
+    "auth.verify_and_sign_in": "验证并登录",
     "command.add_current_note_to_favorites": "收藏当前笔记",
     "command.archive_current_note": "归档当前笔记",
     "command.change_accent_color": "更换强调色",
@@ -131,11 +148,14 @@ export const ZH_CN_MESSAGES = {
     "attachments.filter_images": "图片",
     "attachments.filter_other": "其他",
     "attachments.freed_value0": "释放 {value0}",
+    "attachments.load_failed": "加载更多附件失败",
+    "attachments.load_more": "加载更多",
     "attachments.manage": "管理附件",
     "attachments.manage_description": "查看、筛选和删除所有已上传的附件。",
     "attachments.none_match": "没有匹配的附件",
     "attachments.nothing_to_clean": "没有需要清理的附件",
     "attachments.referenced_value0": "引用 {value0} 次",
+    "attachments.shown_value0": "已显示 {value0} 个附件",
     "attachments.total_value0": "共 {value0} 个附件",
     "attachments.unreferenced": "未引用",
     "common.about": "约",
@@ -149,12 +169,14 @@ export const ZH_CN_MESSAGES = {
     "common.close": "关闭",
     "common.collapse": "收起",
     "common.command_palette": "命令面板",
+    "common.continue": "继续",
     "common.copied": "已复制",
     "common.copy": "复制",
     "common.created": "创建于",
     "common.current_note": "当前笔记",
     "common.delete": "删除",
     "common.delete_failed": "删除失败",
+    "common.download": "下载",
     "common.edit": "编辑",
     "common.empty_trash": "清空回收站？",
     "common.exit": "退出",
@@ -174,6 +196,8 @@ export const ZH_CN_MESSAGES = {
     "common.new_folder": "新建文件夹",
     "common.new_note": "新建笔记",
     "common.note": "笔记",
+    "common.off": "已关闭",
+    "common.on": "已开启",
     "common.open": "打开",
     "common.open_registration": "开放注册",
     "common.open_settings": "打开设置",
@@ -338,6 +362,7 @@ export const ZH_CN_MESSAGES = {
     "notes.failed_to_open_note": "打开笔记失败",
     "notes.filter_in_this_view": "在此视图中筛选…",
     "notes.full_sync_pagination_data_is_incomplete": "全量同步分页信息不完整",
+    "notes.sync_pagination_data_is_incomplete": "同步分页信息不完整",
     "notes.keep_notes_here_when_you_want_them_out_of_the_way_but_not_deleted": "暂时不看但又不想删的笔记可以放这里",
     "notes.keep_this_page_open_and_reconnect_as_soon_as_possible_closing_it_may_mak": "请保持页面打开并尽快恢复网络，否则关闭页面后内容可能无法恢复。",
     "notes.modified": "按修改时间",
@@ -414,13 +439,21 @@ export const ZH_CN_MESSAGES = {
     "pwa.install_description": "在独立窗口中打开 Inkstone，并让应用外壳保持离线可用。",
     "pwa.install_inkstone": "安装 Inkstone",
     "pwa.installed": "已安装",
-    "pwa.offline_ready": "Inkstone 已可离线打开",
-    "pwa.offline_ready_description": "应用外壳已保存在这台设备上。",
+    "pwa.offline_ready": "完整离线资源已准备好",
+    "pwa.offline_ready_description": "Inkstone 的所有功能现在都能在这台设备上断网打开。",
+    "pwa.complete_offline_access": "完整离线能力",
+    "pwa.complete_offline_preparing_description": "Inkstone 会保持流畅，并在后台安静地补齐其余功能。",
+    "pwa.complete_offline_ready": "全部功能已就绪",
+    "pwa.complete_offline_ready_description": "从未打开过的功能现在也可以离线使用。",
+    "pwa.complete_offline_retry_description": "已下载的资源会保留，网络恢复后将自动继续。",
+    "pwa.preparing_progress": "正在准备 {completed}/{total}",
+    "pwa.waiting_for_network": "等待继续",
     "pwa.refresh_now": "立即刷新",
     "pwa.update_ready": "应用更新已就绪",
     "pwa.update_ready_description": "方便时刷新即可；刷新前会先保存待处理的笔记更改。",
     "session.could_not_connect_to_the_server": "无法连接服务器",
     "session.could_not_save_settings": "设置未能保存",
+    "session.logout_failed": "无法安全退出登录",
     "session.logout_pending_changes": "有 {count} 条修改尚未同步，退出登录将丢失这些修改。仍要退出吗？",
     "settings.20_gb_free_25_gb_with_referral_code": "免费 20 GB，推荐码后 25 GB",
     "settings.about": "关于",
@@ -443,13 +476,13 @@ export const ZH_CN_MESSAGES = {
     "settings.background_color": "背景色",
     "settings.background_paper": "暖纸",
     "settings.background_white": "纯白",
-    "settings.accent.amber": "黄铜",
-    "settings.accent.celadon": "青瓷",
+    "settings.accent.amber": "金盏黄",
+    "settings.accent.celadon": "翡翠绿",
     "settings.accent.cinnabar": "朱砂",
-    "settings.accent.graphite": "石墨",
-    "settings.accent.indigo": "靛蓝",
-    "settings.accent.terracotta": "赤陶",
-    "settings.accent.wisteria": "紫藤",
+    "settings.accent.graphite": "雾岩灰",
+    "settings.accent.indigo": "深海蓝",
+    "settings.accent.terracotta": "湖水青",
+    "settings.accent.wisteria": "鸢尾紫",
     "settings.access_key_id": "Access Key ID",
     "settings.account": "账户",
     "settings.action_failed_try_again": "操作失败，请重试",
@@ -477,8 +510,16 @@ export const ZH_CN_MESSAGES = {
     "settings.back_up_now": "立即备份",
     "settings.backup": "备份",
     "settings.backup_completed_value0_targets": "备份完成 · {value0} 个目标",
+    "settings.backup_complete_marker_mismatch": "备份完成标记与清单不一致：{value0}",
+    "settings.backup_duplicate_path": "备份目录中存在重复路径：{value0}",
     "settings.backup_failed": "备份失败",
-    "settings.backup_format": "打包方式",
+    "settings.backup_file_checksum_failed": "备份文件校验失败：{value0}",
+    "settings.backup_file_size_mismatch": "备份文件大小不匹配：{value0}",
+    "settings.backup_manifest_not_found": "没有找到 Inkstone Markdown 备份清单，请选择解压后的完整备份目录（应包含 manifest.json、COMPLETE、notes 等）",
+    "settings.backup_manifest_invalid": "已完成快照的清单无效或版本不受支持：{value0}",
+    "settings.backup_missing_file": "完整备份缺少文件：{value0}",
+    "settings.backup_no_complete_snapshot": "这个目录里没有带有效 COMPLETE 标记的完整快照",
+    "settings.backup_newer_snapshot_skipped": "较新的快照（{value0}）未完成，已改为恢复最近一个完整快照",
     "settings.backup_target": "备份目标",
     "settings.backup_target_added": "已添加备份目标",
     "settings.backup_target_deleted": "已删除备份目标",
@@ -529,7 +570,7 @@ export const ZH_CN_MESSAGES = {
     "settings.display_name_saved": "显示名称已保存",
     "settings.download_json": "下载 JSON",
     "settings.download_zip": "下载 ZIP",
-    "settings.each_backup_goes_independently_to_every_enabled_target_it_includes_notes": "每次备份会同时投递到所有启用的目标，彼此独立。备份包含笔记、目录、标签和附件，可直接从 ZIP 完整恢复。",
+    "settings.each_backup_goes_independently_to_every_enabled_target_it_includes_notes": "每个目标都会收到一个可直接下载的完整 ZIP：笔记保持文件夹层级，归档、回收站和原始附件分开放置；生成和上传全程采用流式处理。",
     "settings.edit_backup_target": "编辑备份目标",
     "settings.editor": "编辑器",
     "settings.endpoint": "端点",
@@ -568,10 +609,8 @@ export const ZH_CN_MESSAGES = {
     "settings.import_failed": "导入失败",
     "settings.operation_completed_but_refresh_failed": "操作已完成，但页面刷新失败，请稍后重试",
     "settings.import_file": "导入文件",
-    "settings.includes_every_note_folder_tag_and_attachment_for_a_complete_restore_plu": "包含全部笔记、目录、标签和附件，可完整还原；同时保留可直接阅读的 .md",
+    "settings.includes_every_note_folder_tag_and_attachment_for_a_complete_restore_plu": "下载与自动备份相同的完整 ZIP；超大备份可解压后选择目录，Inkstone 会分批校验并恢复",
     "settings.indent_width": "缩进宽度",
-    "settings.individual_file_mirror": "逐文件镜像",
-    "settings.individual_files": "逐文件",
     "settings.inkstone_import_reminder": "[Inkstone] 导入提醒:",
     "settings.interface_density": "界面密度",
     "settings.interface_language": "界面语言",
@@ -615,6 +654,7 @@ export const ZH_CN_MESSAGES = {
     "settings.mcp_api_key_copy_warning": "请立即复制此密钥——之后不会再显示",
     "settings.mcp_api_key_create": "创建密钥",
     "settings.mcp_api_key_created": "API 密钥已创建",
+    "settings.mcp_api_key_name": "API 密钥名称",
     "settings.mcp_api_key_name_placeholder": "例如：我的脚本、家庭电脑",
     "settings.mcp_api_key_name_required": "请为 API 密钥填写名称",
     "settings.mcp_api_key_revoke": "撤销密钥",
@@ -628,7 +668,7 @@ export const ZH_CN_MESSAGES = {
     "settings.mcp_api_keys_desc": "给无法走 OAuth 的小型、通用或无名 MCP 客户端使用。用普通的 Bearer 请求头认证；密钥在创建时继承上方读写权限，可随时撤销。",
     "settings.mcp_api_keys_empty": "还没有 API 密钥。为脚本或最小化 MCP 客户端创建一个吧。",
     "settings.mcp_connect_clients": "连接客户端",
-    "settings.mcp_connect_desc": "示例会按当前设置生成，最终权限以浏览器授权页的选择为准。Codex 添加服务时会直接打开 OAuth；修改权限后，需要重新连接或重新登录。",
+    "settings.mcp_connect_desc": "示例采用各客户端当前的远程 HTTP 与 OAuth 配置格式；支持固定 scope 的客户端会按当前设置生成权限。最终权限以浏览器授权页为准，修改权限后需要重新连接或登录。",
     "settings.mcp_connected_clients": "已授权客户端",
     "settings.mcp_copied": "已复制",
     "settings.mcp_copy": "复制",
@@ -640,7 +680,7 @@ export const ZH_CN_MESSAGES = {
     "settings.mcp_endpoint": "远程 MCP 端点",
     "settings.mcp_endpoint_desc": "采用 Streamable HTTP 与 OAuth 2.1（PKCE、受保护资源发现、动态客户端注册、刷新令牌）供完整 MCP 客户端使用，同时提供可撤销的静态 API 密钥（Bearer 令牌）供小型通用客户端使用。",
     "settings.mcp_generic_client": "通用 / 无名客户端（API 密钥）",
-    "settings.mcp_generic_client_snippet": "# 任意小型或无名 MCP 客户端 / 脚本 / SDK（先在上方“API 密钥”处创建一个密钥）\nclaude mcp add-json inkstone '{bearerJson}'\n\n# 或直接在任意 MCP SDK 中设置请求头：{ \"Authorization\": \"Bearer ink_...\" }\n# 用 curl 快速验证端点：\ncurl -X POST \"{endpoint}\" \\\n  -H \"Authorization: Bearer <API_KEY>\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json, text/event-stream\" \\\n  -d '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-06-18\",\"capabilities\":{},\"clientInfo\":{\"name\":\"curl\",\"version\":\"1.0\"}}}'",
+    "settings.mcp_generic_client_snippet": "# 任意小型或无名 MCP 客户端 / 脚本 / SDK（先在上方“API 密钥”处创建一个密钥）\nclaude mcp add-json inkstone '{bearerJson}'\n\n# 或直接在任意 MCP SDK 中设置请求头：{ \"Authorization\": \"Bearer ink_...\" }\n# 用 curl 快速验证端点：\ncurl -X POST \"{endpoint}\" \\\n  -H \"Authorization: Bearer <API_KEY>\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json, text/event-stream\" \\\n  -d '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-11-25\",\"capabilities\":{},\"clientInfo\":{\"name\":\"curl\",\"version\":\"1.0\"}}}'",
     "settings.mcp_grant_revoked": "已撤销客户端访问权",
     "settings.mcp_granted_at": "授权于 {time}",
     "settings.mcp_intro": "让 Codex、Claude Code、Hermes、OpenClaw 以及其他标准 MCP 客户端搜索、引用、读取笔记，并在明确授权后安全编辑笔记。",
@@ -722,6 +762,8 @@ export const ZH_CN_MESSAGES = {
     "settings.registration_open": "已开放注册",
     "settings.registration_status": "注册状态",
     "settings.region": "区域",
+    "settings.restore_backup_folder": "恢复 Inkstone 备份文件夹",
+    "settings.restore_backup_folder_description": "选择新 ZIP 解压后的目录，或旧版同时包含 attachments 和 snapshots 的备份根目录；Inkstone 会验证 COMPLETE 并分批恢复",
     "settings.reloaded_all_data": "已同步最新内容",
     "settings.render_and_using_katex": "显示行内公式和块级公式",
     "settings.render_mermaid_code_blocks_into_flowcharts": "将 Mermaid 代码块显示为图表",
@@ -735,6 +777,7 @@ export const ZH_CN_MESSAGES = {
     "settings.scroll_sync": "滚动同步",
     "settings.sec": "秒",
     "settings.select_file": "选择文件",
+    "settings.select_backup_folder": "选择备份文件夹",
     "settings.selected_avatar": "当前选择",
     "settings.select_object_read_write_for_permissions_and_create_it_directly": "，权限全选“对象读和写”，直接创建。",
     "settings.secret_access_key": "Secret Access Key",
@@ -745,7 +788,6 @@ export const ZH_CN_MESSAGES = {
     "settings.sign_in_security": "登录安全",
     "settings.sign_up": "前往注册",
     "settings.simplified_chinese": "简体中文",
-    "settings.single_archive": "单个压缩包",
     "settings.spellcheck": "拼写检查",
     "settings.standard": "标准",
     "settings.store_backups_in_this_directory_or_leave_blank_to_use_the_root_directory": "备份会放在这个目录下，留空则放在根目录",
@@ -762,6 +804,46 @@ export const ZH_CN_MESSAGES = {
     "settings.then_open": "然后打开",
     "settings.there_are_no_attachments_to_clean": "没有需要清理的附件",
     "settings.this_device_will_be_signed_out_and_its_local_cache_cleared_cloud_data_is": "此设备的会话会被服务端撤销，本地缓存清空；云端数据不受影响。",
+    "settings.totp_authenticator_code": "当前验证器验证码",
+    "settings.totp_code_or_recovery": "验证器验证码或恢复码",
+    "settings.totp_code_or_recovery_placeholder": "6 位验证码或恢复码",
+    "settings.totp_confirm_code": "输入验证器应用当前显示的 6 位验证码",
+    "settings.totp_confirm_disable": "关闭二次验证",
+    "settings.totp_confirm_enable": "验证并开启",
+    "settings.totp_copy_all": "全部复制",
+    "settings.totp_copy_failed": "复制失败，请手动选择并复制。",
+    "settings.totp_disable": "关闭",
+    "settings.totp_disable_description": "请输入当前密码，以及验证器验证码或一枚未使用的恢复码。其他设备会被退出登录。",
+    "settings.totp_disable_title": "确定关闭二次验证？",
+    "settings.totp_disabled": "二次验证已关闭",
+    "settings.totp_disabled_description": "开启后，新设备登录在密码之后还必须通过验证器应用验证。",
+    "settings.totp_enable": "开启",
+    "settings.totp_enable_password_description": "关联验证器应用前，请先确认当前密码。",
+    "settings.totp_enabled": "二次验证已开启",
+    "settings.totp_enabled_description": "新登录必须提供验证器验证码或恢复码，目前还剩 {count} 枚恢复码。",
+    "settings.totp_enter_code_or_recovery": "请输入验证器验证码或恢复码",
+    "settings.totp_enter_six_digit_code": "请输入有效的 6 位验证器验证码",
+    "settings.totp_generate_new_codes": "更换恢复码",
+    "settings.totp_load_failed": "无法读取二次验证状态",
+    "settings.totp_loading": "正在读取二次验证状态…",
+    "settings.totp_manage": "管理",
+    "settings.totp_manual_secret": "手动设置密钥",
+    "settings.totp_other_sessions_revoked": "其他已登录设备均已退出。",
+    "settings.totp_qr_code_title": "验证器设置二维码",
+    "settings.totp_recovery_codes": "恢复码",
+    "settings.totp_recovery_codes_copied": "恢复码已复制",
+    "settings.totp_recovery_codes_once": "每枚恢复码只能使用一次。请存放在私密且可靠的位置；之后不会再次显示。",
+    "settings.totp_recovery_codes_replaced": "恢复码已更换",
+    "settings.totp_recovery_file_title": "Inkstone 二次验证恢复码",
+    "settings.totp_recovery_file_warning": "请妥善保密。每枚恢复码只能使用一次，可用于登录或关闭二次验证。",
+    "settings.totp_regenerate_description": "更换后，之前的所有恢复码会立即失效。请使用当前密码和验证器验证码确认。",
+    "settings.totp_save_recovery_codes": "现在保存这些恢复码",
+    "settings.totp_saved_codes": "我已妥善保存",
+    "settings.totp_scan_qr": "使用验证器应用扫码",
+    "settings.totp_scan_qr_description": "任意兼容 TOTP 的验证器都可以。扫码后，输入应用当前显示的 6 位验证码完成绑定。",
+    "settings.totp_secret_copied": "设置密钥已复制",
+    "settings.totp_title": "二次验证（TOTP）",
+    "settings.totp_unavailable_description": "服务器凭据保险库不可用，暂时无法安全开启 TOTP。",
     "settings.to_add_users_open_registration_under_settings_account_they_can_then_crea": "需要多人使用时，请到「设置 → 账户」开启注册；开启后即可使用用户名密码创建账号。",
     "settings.total_words": "总字数",
     "settings.try_this_when_your_search_results_don_t_look_right": "搜索结果不对劲时试试这个",
@@ -771,8 +853,6 @@ export const ZH_CN_MESSAGES = {
     "settings.up_to_10_gb": "最高 10 GB",
     "settings.update_failed": "更新失败",
     "settings.upload_local_image": "上传本地图片",
-    "settings.upload_individual_files_so_they_remain_browsable_and_editable_in_the_sto": "逐个文件上传，可以直接在网盘里浏览和编辑",
-    "settings.upload_one_zip_to_minimize_requests_best_for_rate_limited_storage_provid": "打成一个 ZIP 上传，请求数最少，适合有限流的网盘",
     "settings.uploaded_avatar": "已上传的本地图片",
     "settings.use_name_avatar": "使用姓名头像",
     "settings.username_is_sign_in_id": "@用户名是登录标识，不会随显示名称一起改变。",
@@ -1042,19 +1122,23 @@ aliases:
 
 ## 为什么适合长期使用
 
-::: tabs
-@tab 写作
+:::: tabs
+::: tab-item 写作
 独立标题、源码编辑、实时预览、双向滚动、专注模式、打字机模式、大纲与版本历史。
+:::
 
-@tab 组织
+::: tab-item 组织
 最多 12 层且可拖拽排序的文件夹、正文 \`#标签\`、\`[[双链]]\`、反向链接、关系图谱和中文全文搜索。桌面端可以在侧边再开一篇笔记，每个窗格独立选择编辑、分栏或预览；删除文件夹时会保留并提升子文件夹，直属笔记移到上一级。
+:::
 
-@tab 搜索与 AI
+::: tab-item 搜索与 AI
 命令面板、关键词搜索，以及可选的 Workers AI 语义/混合搜索。每个账号使用独立索引；AI 不可用时自动回退到关键词结果。
+:::
 
-@tab 安全与备份
+::: tab-item 安全与备份
 自托管、可安装 PWA、离线可写、多设备同步和冲突副本；可同时备份到多个 WebDAV 或 S3 目标，并导出可读 Markdown、附件与完整结构化数据。
 :::
+::::
 
 ## 私有 MCP（可选）
 
@@ -1148,13 +1232,15 @@ flowchart LR
 ~~~~
 
 ~~~~md-example title="标签页"
-::: tabs
-@tab 第一个标签
+:::: tabs
+::: tab-item 第一个标签
 这是第一个标签页的内容。
+:::
 
-@tab 第二个标签
+::: tab-item 第二个标签
 这是第二个标签页的内容。
 :::
+::::
 ~~~~
 
 ~~~~md-example title="折叠内容"

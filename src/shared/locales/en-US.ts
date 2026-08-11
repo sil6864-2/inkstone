@@ -8,6 +8,7 @@ export const EN_US_MESSAGES = {
     "api.error.internal": "Internal server error",
     "api.error.invalid_avatar": "The avatar is invalid or too large",
     "api.error.invalid_credentials": "Incorrect username or password",
+    "api.error.invalid_two_factor_code": "The verification code is incorrect or has already been used",
     "api.error.invalid_profile_name": "The display name is invalid",
     "api.error.invalid_username": "The username format is invalid",
     "api.error.not_found": "The requested item does not exist",
@@ -16,6 +17,11 @@ export const EN_US_MESSAGES = {
     "api.error.server_misconfigured": "The server configuration is incomplete",
     "api.error.storage_unavailable": "Storage is temporarily unavailable",
     "api.error.too_many_attempts": "Too many attempts. Try again later",
+    "api.error.two_factor_already_enabled": "Two-step verification is already enabled",
+    "api.error.two_factor_challenge_expired": "The sign-in verification expired. Enter your password again",
+    "api.error.two_factor_not_enabled": "Two-step verification is not enabled",
+    "api.error.two_factor_setup_expired": "The setup session expired. Start again",
+    "api.error.two_factor_unavailable": "The authenticator secret is unavailable. Use a recovery code instead",
     "api.error.unauthenticated": "Please sign in first",
     "api.error.username_taken": "That username is already in use",
     "api.error.weak_password": "The password is too weak",
@@ -68,15 +74,26 @@ export const EN_US_MESSAGES = {
     "auth.confirm_password": "Confirm Password",
     "auth.create_owner_account": "Create owner account",
     "auth.create_the_owner_account_this_step_appears_only_once": "Create the owner account. This step appears only once.",
+    "auth.authenticator_code": "Authenticator code",
+    "auth.back_to_password": "Back to password",
     "auth.enter_a_username_and_password": "Enter a username and password",
+    "auth.enter_authenticator_code": "Enter the 6-digit code from your authenticator app",
+    "auth.enter_recovery_code": "Enter one of your recovery codes",
     "auth.live_split_view_markdown_preview_realtime_multi_device_sync_multiple_web": "Live split-view Markdown preview · Realtime multi-device sync · Multiple WebDAV / S3 backups",
     "auth.network_error_try_again": "Network error. Try again",
     "auth.no_account_create_one": "No account? Create one",
     "auth.password_minimum_8_characters": "Password (minimum 8 characters)",
+    "auth.recovery_code": "Recovery code",
+    "auth.recovery_code_used": "Recovery code used",
+    "auth.recovery_codes_remaining": "You have {count} unused recovery code(s) remaining. Replace them in Settings if needed.",
     "auth.self_hosted_on_cloudflare_workers_your_data_is_yours": "Private notes · Your data stays under your control",
     "auth.sign_in": "Sign in",
     "auth.sign_up": "Sign up",
     "auth.this_is_a_private_instance_registration_is_closed_so_only_existing_accou": "This is a private instance. Registration is closed, so only existing accounts can sign in.",
+    "auth.two_step_verification_description": "Your password was accepted. Enter a second verification code to finish signing in.",
+    "auth.use_authenticator_code": "Use authenticator code",
+    "auth.use_recovery_code": "Use recovery code",
+    "auth.verify_and_sign_in": "Verify and sign in",
     "command.add_current_note_to_favorites": "Add current note to favorites",
     "command.archive_current_note": "Archive current note",
     "command.change_accent_color": "Change accent color",
@@ -130,11 +147,14 @@ export const EN_US_MESSAGES = {
     "attachments.filter_images": "Images",
     "attachments.filter_other": "Other",
     "attachments.freed_value0": "Freed {value0}",
+    "attachments.load_failed": "Could not load more attachments",
+    "attachments.load_more": "Load more",
     "attachments.manage": "Manage attachments",
     "attachments.manage_description": "View, filter, and delete every uploaded attachment.",
     "attachments.none_match": "No matching attachments",
     "attachments.nothing_to_clean": "No attachments to clean up",
     "attachments.referenced_value0": "{value0} references",
+    "attachments.shown_value0": "Showing {value0} attachments",
     "attachments.total_value0": "{value0} attachments",
     "attachments.unreferenced": "Unreferenced",
     "common.about": "About ",
@@ -148,12 +168,14 @@ export const EN_US_MESSAGES = {
     "common.close": "Close",
     "common.collapse": "Collapse",
     "common.command_palette": "Command palette",
+    "common.continue": "Continue",
     "common.copied": "Copied",
     "common.copy": "Copy",
     "common.created": "Created",
     "common.current_note": "Current note",
     "common.delete": "Delete",
     "common.delete_failed": "Delete failed",
+    "common.download": "Download",
     "common.edit": "Edit",
     "common.empty_trash": "Empty trash?",
     "common.exit": "Exit",
@@ -173,6 +195,8 @@ export const EN_US_MESSAGES = {
     "common.new_folder": "New folder",
     "common.new_note": "New note",
     "common.note": "Note",
+    "common.off": "Off",
+    "common.on": "On",
     "common.open": "Open",
     "common.open_registration": "Open registration",
     "common.open_settings": "Open settings",
@@ -337,6 +361,7 @@ export const EN_US_MESSAGES = {
     "notes.failed_to_open_note": "Failed to open note",
     "notes.filter_in_this_view": "Filter in this view…",
     "notes.full_sync_pagination_data_is_incomplete": "Full-sync pagination data is incomplete",
+    "notes.sync_pagination_data_is_incomplete": "Sync pagination data is incomplete",
     "notes.keep_notes_here_when_you_want_them_out_of_the_way_but_not_deleted": "Keep notes here when you want them out of the way but not deleted",
     "notes.keep_this_page_open_and_reconnect_as_soon_as_possible_closing_it_may_mak": "Keep this page open and reconnect as soon as possible. Closing it may make these changes unrecoverable.",
     "notes.modified": "Modified",
@@ -413,13 +438,21 @@ export const EN_US_MESSAGES = {
     "pwa.install_description": "Open Inkstone in its own window and keep the app shell available offline.",
     "pwa.install_inkstone": "Install Inkstone",
     "pwa.installed": "Installed",
-    "pwa.offline_ready": "Inkstone is ready offline",
-    "pwa.offline_ready_description": "The app shell is now stored on this device.",
+    "pwa.offline_ready": "All offline resources are ready",
+    "pwa.offline_ready_description": "Every Inkstone feature can now open on this device without a network connection.",
+    "pwa.complete_offline_access": "Complete offline access",
+    "pwa.complete_offline_preparing_description": "Inkstone stays responsive while the remaining features download quietly in the background.",
+    "pwa.complete_offline_ready": "All features ready",
+    "pwa.complete_offline_ready_description": "Features you have not opened yet are also available offline.",
+    "pwa.complete_offline_retry_description": "Downloaded resources are kept. Inkstone will continue automatically when the connection returns.",
+    "pwa.preparing_progress": "Preparing {completed}/{total}",
+    "pwa.waiting_for_network": "Waiting to continue",
     "pwa.refresh_now": "Refresh now",
     "pwa.update_ready": "An app update is ready",
     "pwa.update_ready_description": "Refresh when convenient. Pending note changes are saved first.",
     "session.could_not_connect_to_the_server": "Could not connect to the server",
     "session.could_not_save_settings": "Could not save settings",
+    "session.logout_failed": "Could not log out safely",
     "session.logout_pending_changes": "{count} unsaved change(s) could not be synced. Signing out will lose them. Sign out anyway?",
     "settings.20_gb_free_25_gb_with_referral_code": "20 GB free, 25 GB with referral code",
     "settings.about": "about",
@@ -442,13 +475,13 @@ export const EN_US_MESSAGES = {
     "settings.background_color": "Background",
     "settings.background_paper": "Warm paper",
     "settings.background_white": "Pure white",
-    "settings.accent.amber": "Brass",
-    "settings.accent.celadon": "Celadon",
+    "settings.accent.amber": "Marigold",
+    "settings.accent.celadon": "Jade",
     "settings.accent.cinnabar": "Cinnabar",
-    "settings.accent.graphite": "Graphite",
-    "settings.accent.indigo": "Indigo",
-    "settings.accent.terracotta": "Terracotta",
-    "settings.accent.wisteria": "Wisteria",
+    "settings.accent.graphite": "Slate",
+    "settings.accent.indigo": "Deep sea",
+    "settings.accent.terracotta": "Lagoon",
+    "settings.accent.wisteria": "Iris",
     "settings.access_key_id": "Access Key ID",
     "settings.account": "Account",
     "settings.action_failed_try_again": "Action failed. Try again",
@@ -476,8 +509,16 @@ export const EN_US_MESSAGES = {
     "settings.back_up_now": "Back up now",
     "settings.backup": "Backup",
     "settings.backup_completed_value0_targets": "Backup completed · {value0} targets",
+    "settings.backup_complete_marker_mismatch": "The COMPLETE marker does not match the manifest: {value0}",
+    "settings.backup_duplicate_path": "The backup folder contains a duplicate path: {value0}",
     "settings.backup_failed": "Backup failed",
-    "settings.backup_format": "Backup format",
+    "settings.backup_file_checksum_failed": "Backup file checksum failed: {value0}",
+    "settings.backup_file_size_mismatch": "Backup file size does not match: {value0}",
+    "settings.backup_manifest_not_found": "No Inkstone Markdown backup manifest was found. Select the complete extracted backup folder containing manifest.json, COMPLETE, and notes.",
+    "settings.backup_manifest_invalid": "The completed snapshot has an invalid or unsupported manifest: {value0}",
+    "settings.backup_missing_file": "The complete backup is missing a file: {value0}",
+    "settings.backup_no_complete_snapshot": "This folder has no complete snapshot with a valid COMPLETE marker.",
+    "settings.backup_newer_snapshot_skipped": "A newer snapshot ({value0}) was incomplete, so the newest complete snapshot was restored instead.",
     "settings.backup_target": "Backup target",
     "settings.backup_target_added": "Backup target added",
     "settings.backup_target_deleted": "Backup target deleted",
@@ -528,7 +569,7 @@ export const EN_US_MESSAGES = {
     "settings.display_name_saved": "Display name saved",
     "settings.download_json": "Download JSON",
     "settings.download_zip": "Download ZIP",
-    "settings.each_backup_goes_independently_to_every_enabled_target_it_includes_notes": "Each backup goes independently to every enabled target. It includes notes, folders, tags, and attachments and can be fully restored from the ZIP.",
+    "settings.each_backup_goes_independently_to_every_enabled_target_it_includes_notes": "Each target receives one complete downloadable ZIP. Notes retain their folder hierarchy, archived and trashed notes and original attachments stay separate, and generation plus upload are fully streamed.",
     "settings.edit_backup_target": "Edit backup target",
     "settings.editor": "Editor",
     "settings.endpoint": "Endpoint",
@@ -567,10 +608,8 @@ export const EN_US_MESSAGES = {
     "settings.import_failed": "Import failed",
     "settings.operation_completed_but_refresh_failed": "The operation completed, but the page could not refresh. Try again shortly",
     "settings.import_file": "Import file",
-    "settings.includes_every_note_folder_tag_and_attachment_for_a_complete_restore_plu": "Includes every note, folder, tag, and attachment for a complete restore, plus readable .md files",
+    "settings.includes_every_note_folder_tag_and_attachment_for_a_complete_restore_plu": "Downloads the same complete ZIP used by automatic backup. Extract very large backups and select the folder for bounded restore batches.",
     "settings.indent_width": "Indent width",
-    "settings.individual_file_mirror": "Individual-file mirror",
-    "settings.individual_files": "Individual files",
     "settings.inkstone_import_reminder": "[Inkstone] Import reminder:",
     "settings.interface_density": "Interface density",
     "settings.interface_language": "Interface language",
@@ -614,6 +653,7 @@ export const EN_US_MESSAGES = {
     "settings.mcp_api_key_copy_warning": "Copy this key now — it will never be shown again",
     "settings.mcp_api_key_create": "Create key",
     "settings.mcp_api_key_created": "API key created",
+    "settings.mcp_api_key_name": "API key name",
     "settings.mcp_api_key_name_placeholder": "e.g. my-script, home-laptop",
     "settings.mcp_api_key_name_required": "Enter a name for the API key",
     "settings.mcp_api_key_revoke": "Revoke key",
@@ -627,7 +667,7 @@ export const EN_US_MESSAGES = {
     "settings.mcp_api_keys_desc": "For small, generic, or unnamed MCP clients that cannot run OAuth. Authenticate with a plain Bearer header; keys inherit the read/write permissions above at creation time and can be revoked at any time.",
     "settings.mcp_api_keys_empty": "No API keys yet. Create one for scripts or minimal MCP clients.",
     "settings.mcp_connect_clients": "Connect a client",
-    "settings.mcp_connect_desc": "Examples reflect the current settings, and the browser consent page confirms the final permissions. Codex opens OAuth while adding the server; after changing permissions, reconnect or sign in again.",
+    "settings.mcp_connect_desc": "Examples use each client's current remote HTTP and OAuth format. Clients that can pin scopes reflect the settings above; the browser consent page confirms the final permissions. Reconnect or sign in again after changing them.",
     "settings.mcp_connected_clients": "Authorized clients",
     "settings.mcp_copied": "Copied",
     "settings.mcp_copy": "Copy",
@@ -639,7 +679,7 @@ export const EN_US_MESSAGES = {
     "settings.mcp_endpoint": "Remote MCP endpoint",
     "settings.mcp_endpoint_desc": "Streamable HTTP with OAuth 2.1 (PKCE, protected-resource discovery, dynamic client registration, refresh tokens) for full MCP clients, plus revocable static API keys (Bearer tokens) for small generic clients.",
     "settings.mcp_generic_client": "Generic / unnamed client (API key)",
-    "settings.mcp_generic_client_snippet": "# Any small or unnamed MCP client / script / SDK (create an API key in the section above first)\nclaude mcp add-json inkstone '{bearerJson}'\n\n# Or set the Authorization header directly in any MCP SDK: { \"Authorization\": \"Bearer ink_...\" }\n# Quick endpoint check with curl:\ncurl -X POST \"{endpoint}\" \\\n  -H \"Authorization: Bearer <API_KEY>\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json, text/event-stream\" \\\n  -d '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-06-18\",\"capabilities\":{},\"clientInfo\":{\"name\":\"curl\",\"version\":\"1.0\"}}}'",
+    "settings.mcp_generic_client_snippet": "# Any small or unnamed MCP client / script / SDK (create an API key in the section above first)\nclaude mcp add-json inkstone '{bearerJson}'\n\n# Or set the Authorization header directly in any MCP SDK: { \"Authorization\": \"Bearer ink_...\" }\n# Quick endpoint check with curl:\ncurl -X POST \"{endpoint}\" \\\n  -H \"Authorization: Bearer <API_KEY>\" \\\n  -H \"Content-Type: application/json\" \\\n  -H \"Accept: application/json, text/event-stream\" \\\n  -d '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-11-25\",\"capabilities\":{},\"clientInfo\":{\"name\":\"curl\",\"version\":\"1.0\"}}}'",
     "settings.mcp_grant_revoked": "Client access revoked",
     "settings.mcp_granted_at": "authorized {time}",
     "settings.mcp_intro": "Let Codex, Claude Code, Hermes, OpenClaw, and other standard MCP clients search, cite, read, and—with explicit permission—safely edit your notes.",
@@ -721,6 +761,8 @@ export const EN_US_MESSAGES = {
     "settings.registration_open": "Registration open",
     "settings.registration_status": "Registration status",
     "settings.region": "Region",
+    "settings.restore_backup_folder": "Restore Inkstone backup folder",
+    "settings.restore_backup_folder_description": "Select a folder extracted from the new ZIP, or a legacy backup root containing attachments and snapshots. Inkstone verifies COMPLETE and restores it in bounded batches.",
     "settings.reloaded_all_data": "Up to date",
     "settings.render_and_using_katex": "Display inline and block math",
     "settings.render_mermaid_code_blocks_into_flowcharts": "Display Mermaid code blocks as diagrams",
@@ -734,6 +776,7 @@ export const EN_US_MESSAGES = {
     "settings.scroll_sync": "Scroll sync",
     "settings.sec": " sec",
     "settings.select_file": "Select file",
+    "settings.select_backup_folder": "Select backup folder",
     "settings.selected_avatar": "Selected avatar",
     "settings.select_object_read_write_for_permissions_and_create_it_directly": ", select Object Read & Write for permissions, and create it directly.",
     "settings.secret_access_key": "Secret Access Key",
@@ -744,7 +787,6 @@ export const EN_US_MESSAGES = {
     "settings.sign_in_security": "Sign-in security",
     "settings.sign_up": "Sign up",
     "settings.simplified_chinese": "Simplified Chinese",
-    "settings.single_archive": "Single archive",
     "settings.spellcheck": "Spellcheck",
     "settings.standard": "Standard",
     "settings.store_backups_in_this_directory_or_leave_blank_to_use_the_root_directory": "Store backups in this directory, or leave blank to use the root directory",
@@ -761,6 +803,46 @@ export const EN_US_MESSAGES = {
     "settings.then_open": "Then open",
     "settings.there_are_no_attachments_to_clean": "There are no attachments to clean",
     "settings.this_device_will_be_signed_out_and_its_local_cache_cleared_cloud_data_is": "This device will be signed out and its local cache cleared. Cloud data is unaffected.",
+    "settings.totp_authenticator_code": "Current authenticator code",
+    "settings.totp_code_or_recovery": "Authenticator or recovery code",
+    "settings.totp_code_or_recovery_placeholder": "6-digit code or recovery code",
+    "settings.totp_confirm_code": "Enter the 6-digit code shown in the app",
+    "settings.totp_confirm_disable": "Disable two-step verification",
+    "settings.totp_confirm_enable": "Verify and enable",
+    "settings.totp_copy_all": "Copy all",
+    "settings.totp_copy_failed": "Could not copy. Select and copy the value manually.",
+    "settings.totp_disable": "Disable",
+    "settings.totp_disable_description": "Enter your password and either a current authenticator code or an unused recovery code. Other devices will be signed out.",
+    "settings.totp_disable_title": "Disable two-step verification?",
+    "settings.totp_disabled": "Two-step verification disabled",
+    "settings.totp_disabled_description": "Add an authenticator app code after your password to protect new sign-ins.",
+    "settings.totp_enable": "Enable",
+    "settings.totp_enable_password_description": "Confirm your current password before linking an authenticator app.",
+    "settings.totp_enabled": "Two-step verification enabled",
+    "settings.totp_enabled_description": "New sign-ins require an authenticator or recovery code. {count} recovery code(s) remain.",
+    "settings.totp_enter_code_or_recovery": "Enter an authenticator or recovery code",
+    "settings.totp_enter_six_digit_code": "Enter a valid 6-digit authenticator code",
+    "settings.totp_generate_new_codes": "Replace recovery codes",
+    "settings.totp_load_failed": "Could not load two-step verification status",
+    "settings.totp_loading": "Loading two-step verification…",
+    "settings.totp_manage": "Manage",
+    "settings.totp_manual_secret": "Manual setup key",
+    "settings.totp_other_sessions_revoked": "Other signed-in devices have been logged out.",
+    "settings.totp_qr_code_title": "Authenticator setup QR code",
+    "settings.totp_recovery_codes": "Recovery codes",
+    "settings.totp_recovery_codes_copied": "Recovery codes copied",
+    "settings.totp_recovery_codes_once": "Each code works once. Store them somewhere private; they will not be shown again.",
+    "settings.totp_recovery_codes_replaced": "Recovery codes replaced",
+    "settings.totp_recovery_file_title": "Inkstone two-step verification recovery codes",
+    "settings.totp_recovery_file_warning": "Keep these codes private. Each code can be used once to sign in or disable two-step verification.",
+    "settings.totp_regenerate_description": "Replacing these codes immediately invalidates every previous recovery code. Confirm with your password and authenticator.",
+    "settings.totp_save_recovery_codes": "Save these recovery codes now",
+    "settings.totp_saved_codes": "I saved these codes",
+    "settings.totp_scan_qr": "Scan with your authenticator app",
+    "settings.totp_scan_qr_description": "Use any TOTP-compatible app, then enter its current 6-digit code to confirm setup.",
+    "settings.totp_secret_copied": "Setup key copied",
+    "settings.totp_title": "Two-step verification (TOTP)",
+    "settings.totp_unavailable_description": "The server credential vault is unavailable, so TOTP cannot be enabled safely.",
     "settings.to_add_users_open_registration_under_settings_account_they_can_then_crea": "To add users, open registration under Settings → Account. They can then create an account with a username and password.",
     "settings.total_words": "Total words",
     "settings.try_this_when_your_search_results_don_t_look_right": "Try this when your search results don't look right",
@@ -770,8 +852,6 @@ export const EN_US_MESSAGES = {
     "settings.up_to_10_gb": "Up to 10 GB",
     "settings.update_failed": "Update failed",
     "settings.upload_local_image": "Upload a local image",
-    "settings.upload_individual_files_so_they_remain_browsable_and_editable_in_the_sto": "Upload individual files so they remain browsable and editable in the storage service",
-    "settings.upload_one_zip_to_minimize_requests_best_for_rate_limited_storage_provid": "Upload one ZIP to minimize requests; best for rate-limited storage providers",
     "settings.uploaded_avatar": "Uploaded local image",
     "settings.use_name_avatar": "Use name avatar",
     "settings.username_is_sign_in_id": "@username is your sign-in ID and does not change with your display name.",
@@ -1041,19 +1121,23 @@ Use the left side to organize notes, the center to edit plain Markdown, and the 
 
 ## Why it works for long-term notes
 
-::: tabs
-@tab Writing
+:::: tabs
+::: tab-item Writing
 Independent titles, source editing, live preview, synchronized scrolling, focus and typewriter modes, an outline, and version history.
+:::
 
-@tab Organization
+::: tab-item Organization
 Twelve levels of drag-sortable folders, inline \`#tags\`, \`[[wiki links]]\`, backlinks, a graph, and full-text search. On desktop, open a second note to the side and choose edit, split, or preview independently in each active group. Deleting a folder promotes its children and moves direct notes to the parent.
+:::
 
-@tab Search & AI
+::: tab-item Search & AI
 Keyboard command-palette navigation, keyword search, and optional Workers AI semantic/hybrid search. Every account has a separate index, with automatic keyword fallback when AI is unavailable.
+:::
 
-@tab Safety & backup
+::: tab-item Safety & backup
 Self-hosting, an installable PWA, offline editing, multi-device sync, and conflict copies. Back up to several WebDAV or S3 targets and export readable Markdown, attachments, and complete structured data.
 :::
+::::
 
 ## Private MCP (optional)
 
@@ -1147,13 +1231,15 @@ flowchart LR
 ~~~~
 
 ~~~~md-example title="Tabs"
-::: tabs
-@tab First tab
+:::: tabs
+::: tab-item First tab
 This is the first tab panel.
+:::
 
-@tab Second tab
+::: tab-item Second tab
 This is the second tab panel.
 :::
+::::
 ~~~~
 
 ~~~~md-example title="Folded content"

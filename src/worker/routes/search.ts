@@ -7,11 +7,16 @@ import type { AppBindings } from '../env'
 import { drainFtsQueue, hasPendingFtsWork, rebuildFtsIndex } from '../db/fts'
 import { NOTE_COLUMNS, toNoteSummary, type NoteRow } from '../db/rows'
 import { ApiError } from '../lib/errors'
-import { clampInt } from '../lib/request'
+import { isValidId } from '../lib/id'
+import { acquireLease } from '../lib/lease'
 import { scheduleFtsDrain } from '../lib/notify'
+import { clampInt } from '../lib/request'
+import { consumeAttemptBudget, ThrottleError } from '../lib/throttle'
 import { requireAuth } from '../middleware/auth'
 
 export const searchRoutes = new Hono<AppBindings>()
+
+const GRAPH_EDGE_CANDIDATE_LIMIT = 10_000
 
 
 export interface ParsedQuery {
@@ -296,14 +301,15 @@ function applyFilters(q: ParsedQuery, binds: unknown[], append: (clause: string)
     binds.push(tag)
     append(
       ` AND EXISTS (SELECT 1 FROM note_tags nt JOIN tags t ON t.id = nt.tag_id
-          WHERE nt.note_id = n.id AND t.name = ?${binds.length})`,
+          WHERE nt.note_id = n.id AND t.user_id = n.user_id
+            AND t.name = ?${binds.length} COLLATE NOCASE)`,
     )
   }
   if (q.folder) {
     binds.push(q.folder)
     append(
       ` AND EXISTS (SELECT 1 FROM folders f WHERE f.id = n.folder_id
-          AND f.name = ?${binds.length} AND f.user_id = n.user_id)`,
+          AND f.name = ?${binds.length} COLLATE NOCASE AND f.user_id = n.user_id)`,
     )
   }
 }
@@ -363,15 +369,29 @@ function contentWindowSql(termBindIndex: number): string {
 searchRoutes.get('/graph', requireAuth, async (c) => {
   const userId = c.get('userId')
   const mode = c.req.query('mode') === 'local' ? 'local' : 'global'
-  const centerId = (c.req.query('center') ?? '').trim() || null
+  const rawCenter = (c.req.query('center') ?? '').trim()
+  const centerId = rawCenter && isValidId(rawCenter) ? rawCenter : null
   const depth = clampInt(c.req.query('depth'), 1, 3, 1)
   const limit = clampInt(c.req.query('limit'), 50, 600, 350)
   const query = (c.req.query('q') ?? '').trim()
-  const folderId = (c.req.query('folderId') ?? '').trim()
+  const rawFolderId = (c.req.query('folderId') ?? '').trim()
+  const folderId = rawFolderId && isValidId(rawFolderId) ? rawFolderId : ''
   const tag = (c.req.query('tag') ?? '').trim()
   const includeOrphans = c.req.query('includeOrphans') !== '0'
   const includeUnresolved = c.req.query('includeUnresolved') === '1'
 
+  if (rawCenter && !centerId) {
+    throw new ApiError(400, 'bad_request', 'The center note id is not a valid note id')
+  }
+  if (rawFolderId && !folderId) {
+    throw new ApiError(400, 'bad_request', 'The folder id is not a valid folder id')
+  }
+  if (query.length > 200) {
+    throw new ApiError(400, 'bad_request', 'The graph search query cannot exceed 200 characters')
+  }
+  if (tag.length > LIMITS.tagNameMaxLength) {
+    throw new ApiError(400, 'bad_request', `The graph tag cannot exceed ${LIMITS.tagNameMaxLength} characters`)
+  }
   if (mode === 'local' && !centerId) {
     throw new ApiError(400, 'bad_request', 'A center note is required for the local graph')
   }
@@ -481,8 +501,8 @@ searchRoutes.get('/graph', requireAuth, async (c) => {
         `SELECT source_note_id, target_note_id, target_key, target_title FROM links
          WHERE user_id = ? AND source_note_id IN (${placeholders})
            AND (target_note_id IN (${placeholders})${includeUnresolved ? ' OR target_note_id IS NULL' : ''})
-         ORDER BY source_note_id ASC, target_key ASC`,
-      ).bind(userId, ...ids, ...ids).all<{
+         ORDER BY source_note_id ASC, target_key ASC LIMIT ?`,
+      ).bind(userId, ...ids, ...ids, GRAPH_EDGE_CANDIDATE_LIMIT + 1).all<{
         source_note_id: string
         target_note_id: string | null
         target_key: string
@@ -494,8 +514,9 @@ searchRoutes.get('/graph', requireAuth, async (c) => {
          WHERE nt.note_id IN (${placeholders}) ORDER BY t.name COLLATE NOCASE ASC`,
       ).bind(userId, ...ids).all<{ note_id: string; name: string; color: string | null }>(),
     ])
+    if (linkResult.results.length > GRAPH_EDGE_CANDIDATE_LIMIT) truncated = true
     const seen = new Set<string>()
-    for (const link of linkResult.results) {
+    for (const link of linkResult.results.slice(0, GRAPH_EDGE_CANDIDATE_LIMIT)) {
       if (link.target_note_id === null) {
         if (!includeUnresolved || unresolved.size >= 50 && !unresolved.has(link.target_key)) continue
         const current = unresolved.get(link.target_key) ?? {
@@ -577,6 +598,35 @@ searchRoutes.get('/graph', requireAuth, async (c) => {
 searchRoutes.post('/search/reindex', requireAuth, async (c) => {
   const { ftsEnabled } = c.get('database')
   if (!ftsEnabled) throw new ApiError(503, 'internal', 'Full-text indexing is unavailable in this environment; search is using its fallback')
-  const count = await rebuildFtsIndex(c.env.DB, c.get('userId'))
-  return c.json({ ok: true, indexed: count })
+  const userId = c.get('userId')
+  const release = await acquireLease(
+    c.env.DB,
+    `fts-reindex-run:${userId}`,
+    15 * 60 * 1000,
+    'Search indexing is already running',
+  )
+  try {
+    try {
+      await consumeAttemptBudget(c.env.DB, [{
+        key: `fts-reindex:${userId}`,
+        maxAttempts: 6,
+        windowMs: 60 * 60 * 1000,
+        lockMs: 60 * 60 * 1000,
+      }])
+    } catch (error) {
+      if (error instanceof ThrottleError) {
+        throw new ApiError(
+          429,
+          'too_many_attempts',
+          `Too many search reindex requests. Try again in ${error.retryAfterSec} seconds`,
+          { retryAfter: error.retryAfterSec },
+        )
+      }
+      throw error
+    }
+    const count = await rebuildFtsIndex(c.env.DB, userId)
+    return c.json({ ok: true, indexed: count })
+  } finally {
+    await release()
+  }
 })

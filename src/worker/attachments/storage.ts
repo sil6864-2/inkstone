@@ -3,6 +3,7 @@ import { truncateText } from '@shared/text-utils'
 import type { Env } from '../env'
 import { ApiError } from '../lib/errors'
 import { sha256Hex } from '../lib/encoding'
+import { acquireLease } from '../lib/lease'
 import {
   hasReasonableImageDimensions,
   readImageSize,
@@ -43,13 +44,36 @@ export interface PersistedAttachment {
   createdAt: number
 }
 
+export async function persistAttachmentWithinQuota(
+  env: Env,
+  input: PersistAttachmentInput,
+): Promise<PersistedAttachment> {
+  const release = await acquireLease(
+    env.DB,
+    `attachment-quota:${input.userId}`,
+    2 * 60 * 1000,
+    'Another attachment upload is being finalized. Try again shortly',
+  )
+  try {
+    const usage = await env.DB.prepare(
+      `SELECT COALESCE(SUM(size), 0) AS bytes FROM attachments WHERE user_id = ?1`,
+    ).bind(input.userId).first<{ bytes: number }>()
+    if ((usage?.bytes ?? 0) + input.bytes.byteLength > LIMITS.attachmentQuotaBytes) {
+      throw ApiError.tooLarge('The account attachment quota has been reached')
+    }
+    return await persistAttachment(env, input)
+  } finally {
+    await release()
+  }
+}
+
 
 export async function persistAttachment(
   env: Env,
   input: PersistAttachmentInput,
 ): Promise<PersistedAttachment> {
   if (input.bytes.byteLength > LIMITS.attachmentMaxBytes) {
-    throw ApiError.tooLarge('The file exceeds the 10 MB limit')
+    throw ApiError.tooLarge('The file exceeds the 25 MB limit')
   }
   const storage = selectAttachmentStorage(env)
   if (!storage) {
